@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <title>CSCE Enrollments &amp; Gender</title>
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <link rel="stylesheet" href="main.css"/>
+    <script src="graph.js"></script>
+
+  </head>
+  <body>
+
+  <div class="container">
+
+    <div class="jumbotron">
+    <h2>Department of Computer Science &amp; Engineering</h2>
+    <h3>Major Enrollments &amp; Gender</h3>
+    <p>This page provides some data on the enrollment figures for the last 10 years for both Computer
+       Science and Computer Engineering.  In addition, we have tracked the percentage of women in
+       each major.</p>
+
+    <p>Data is based on numbers reported by the office of <a href="http://irp.unl.edu/">Insititutional Research &amp; Planning (IRP)</a>
+        which is publicily available <a href="http://irp.unl.edu/data/enrollment/gender">here</a>.
+    </div><!-- end of jumbotron -->
+
+      <div class="container col-md-8 col-md-offset-2">
+
+          <div id="graph"></div>
+      </div>
+      <div class="container col-md-8 col-md-offset-2">
+        <ul>
+            <li>Dashed lines are for Computer Engineering, solid for Computer Science</li>
+            <li>UNL Term Codes: the middle two digits are the year, the third is the month the term begins (1 = Spring, 8 = Fall), thus
+                1158 = Fall 2015</li>
+        </ul>
+      </div>
+
+  </div>
+
+
+  </body>
+</html>

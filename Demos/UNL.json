@@ -1,0 +1,231 @@
+{
+ "name": "UNL",
+ "children": [
+  {
+   "name": "Agricultural Sciences and Natural Resources",
+   "children": [
+    {
+     "name": "Agricultural Economics",
+     "children": [
+      {"name": "Dave Aiken", "size": 3938},
+      {"name": "Azzeddine Azzam", "size": 3812},
+      {"name": "Simanti Banerjee", "size": 6714},
+      {"name": "Kate Brooks", "size": 743}
+     ]
+    },
+    {
+     "name": "Food Science and Technology",
+     "children": [
+      {"name": "Dr. Rolando Flores", "size": 3534},
+      {"name": "Dr. Joe Baumert", "size": 5731},
+      {"name": "Dr. Andreia Bianchini", "size": 7840}
+     ]
+    },
+    {
+     "name": "Statistics",
+     "children": [
+      {"name": "Dr. Erin Blankenship", "size": 7074},
+      {"name": "Dr. Kathy Hanford", "size": 7000}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Architecture",
+   "children": [
+    {"name": "D.ONE", "size": 17010},
+    {"name": "Interior Design", "size": 5842},
+    {"name": "Landscape Architecture", "size": 1041},
+    {"name": "Community and Regional Planning", "size": 5176},
+    {
+     "name": "Faculty",
+     "children": [
+      {"name": "Betsy Gabb", "size": 1983},
+      {"name": "Jenna Hilligoss", "size": 2047},
+      {"name": "Kim Wilson", "size": 1375},
+      {"name": "Peter Hind", "size": 8746},
+      {"name": "Sharon Kuska", "size": 2202}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Arts and Sciences",
+   "children": [
+    {
+     "name": "Anthropology",
+     "children": [
+      {"name": "Effie Athanassopoulos", "size": 721},
+      {"name": "Wayne Babchuk", "size": 4294},
+      {"name": "Mark Awakuni-Swetland", "size": 9800},
+      {"name": "Shimelis Beyene", "size": 1314}
+     ]
+    },
+    {"name": "Computer Science",
+     "children": [
+      {"name": "Chris Bourke", "size": 721},
+      {"name": "Myra Cohen", "size": 4294},
+      {"name": "Juan Cui", "size": 9800},
+      {"name": "Jitender Deogun", "size": 1314}
+     ]
+    },
+    {"name": "English",
+     "children": [
+      {"name": "Marco Abel", "size": 721},
+      {"name": "Joy Castro", "size": 4294}
+     ]
+    },
+    {"name": "Mathmetics",
+    "children": [
+      {"name": "Steve Cohn", "size": 721},
+      {"name": "Allan Donsig", "size": 4294},
+      {"name": "Mikil Foss", "size": 9800}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Business Administration",
+   "children": [
+    {"name": "School of Accountancy",
+    "children": [
+      {"name": "Arthur C Allen", "size": 721},
+      {"name": "Debra M Cosgrove", "size": 4294}
+     ]
+    },
+    {"name": "Economics",
+    "children": [
+      {"name": "Sam Allgood", "size": 721},
+      {"name": "John E Anderson", "size": 4294}
+     ]
+    },
+    {"name": "Finance",
+    "children": [
+      {"name": "Jan Beran", "size": 721}
+     ]
+    },
+    {"name": "Management",
+    "children": [
+      {"name": "A. Dwayne Ball", "size": 721},
+      {"name": "Bethany Billman", "size": 4294},
+      {"name": "Subrata Chakrabarty", "size": 9800}
+     ]
+    },
+    {"name": "Marketing",
+    "children": [
+      {"name": "Les Carlson", "size": 4294}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Education and Human Sciences",
+   "children": [
+    {"name": "Child, Youth and Family Studies",
+     "children": [
+      {"name": "Richard Bischoff","size": 4116}
+      ]
+    },
+    {"name": "Educational Psychology",
+     "children": [
+      {"name": "Wayne Babchuk","size": 1336}
+      ]
+    },
+    {"name": "Nutrition and Health Sciences",
+     "children": [
+      {"name": "Linda Boeckner","size": 319}
+      ]
+    },
+    {"name": "Textiles, Merchandising and Fashion Design",
+     "children": [
+      {"name": "Shubha Bennur","size": 1049}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Engineering",
+   "children": [
+    {"name": "Biological Systems Engineering", "size": 1082},
+    {"name": "Civil Engineering", "size": 1336},
+    {"name": "Chemical and Biomolecular", "size": 319}
+   ]
+  },
+  {
+   "name": "Hixson-Lied College of Fine and Performing Arts",
+   "children": [
+    {"name": "Art and Art History",
+    "children": [
+      {"name": "Andrea Bolland","size": 1616}
+     ]
+    },
+    {"name": "Dance",
+     "children": [
+      {"name": "John W. Richmond","size": 1027}
+     ]
+    },
+    {"name": "Film and New Media",
+     "children": [
+      {"name": "Paul Steger","size": 3891}
+     ]
+    },
+    {"name": "Music",
+     "children": [
+      {"name": "Scott Anderson","size": 891}
+     ]
+    },
+    {"name": "Theatre",
+     "children": [
+      {"name": "Ian Borden","size": 2893}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Graduate Studies",
+   "children": [
+    {"name": "Recruiting and Admitting", "size": 2105},
+    {"name": "Advising and Mentorship", "size": 1316},
+    {"name": "Administration", "size": 3151}
+   ]
+  },
+  {
+   "name": "Journalism and Mass Communications",
+   "children": [
+    {
+     "name": "Advertising and Public Relations",
+     "children": [
+      {"name": "Ruth Brown", "size": 9354},
+      {"name": "Michael Goff", "size": 1233}
+     ]
+    },
+    {
+     "name": "Broadcasting",
+     "children": [
+      {"name": "Rick Alloway", "size": 3165},
+      {"name": "Kathryn Christensen", "size": 2815},
+      {"name": "Trina Creighton", "size": 3366}
+     ]
+    },
+    {
+     "name": "Journalism",
+     "children": [
+      {"name": "Tim Anderson", "size": 6367},
+      {"name": "John Bender", "size": 1229},
+      {"name": "Alan Eno", "size": 2059},
+      {"name": "Michelle Carr Hassler", "size": 2291}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Law",
+   "children": [
+    {"name": "Steven Bradford", "size": 789},
+    {"name": "Richard Dooling","size": 845},
+    {"name": "Alan Frank","size": 990},
+    {"name": "Martin Gardner","size": 1117}
+   ]
+  }
+ ]
+}

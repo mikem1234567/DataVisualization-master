@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!-- Adapted from http://bl.ocks.org/d3noob/e34791a32a54e015f57d -->
+<meta charset="utf-8">
+<style>
+
+body { font: 12px Arial;}
+
+path {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+
+var margin = {top: 30, right: 40, bottom: 50, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
+
+var x =  d3.scale.linear().range([0, width]);
+var y0 = d3.scale.linear().range([height, 0]);
+var y1 = d3.scale.linear().range([height, 0]);
+
+var xAxis = d3.svg.axis().scale(x)
+.orient("bottom").tickFormat(function(d) {
+    return (d/1);} ).ticks(5);
+
+var yAxisLeft = d3.svg.axis().scale(y0)
+    .orient("left").ticks(5);
+
+var yAxisRight = d3.svg.axis().scale(y1)
+    .orient("right").ticks(5);
+
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.day); })
+    .y(function(d) { return y0(d.close); });
+
+var valueline2 = d3.svg.line()
+    .x(function(d) { return x(d.day); })
+    .y(function(d) { return y1(d.open); });
+
+var svg = d3.select("body")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+  // Add the text label for the left Y axis
+svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left-3)
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("fill", "steelblue")
+        .text("Close");
+
+svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 + width+margin.left-25)
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("fill", "tomato")
+        .text("Open");
+
+svg.append("text")
+        .attr("y", 0 + height + 30)
+        .attr("x",0 + width / 2)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Day");
+
+// Get the data
+d3.csv("data2a.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.day = parseInt(d.day);
+        d.close = +d.close;
+        d.open = +d.open;
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.day; }));
+    y0.domain([0, d3.max(data, function(d) {
+		return Math.max(d.close); })]);
+    y1.domain([0, d3.max(data, function(d) {
+		return Math.max(d.open); })]);
+
+    svg.append("path")        // Add the valueline path.
+        .attr("d", valueline(data));
+
+    svg.append("path")        // Add the valueline2 path.
+        .style("stroke", "tomato")
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("d", valueline2(data));
+
+    svg.append("g")            // Add the X Axis
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .style("fill", "steelblue")
+        .call(yAxisLeft);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(" + width + " ,0)")
+        .style("fill", "tomato")
+        .call(yAxisRight);
+
+});
+
+</script>
+</body>

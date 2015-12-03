@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <title>DFW Rates in Introductory CS Courses at UNL</title>
+<style>
+
+body {
+  font: 10px sans-serif;
+  width: 700px;
+}
+
+.chord path {
+  fill-opacity: .67;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+</style>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+d3.json("data.json", function(error, mlbData) {
+
+var colors = ["#1f77b4", "#d62728", "#957244", "#EEB4B4", "#696969", "#555555"];
+var groupLabels = ["Bourke", "Conger", "Patrick", "Riedesel", "Samal", "Suing", "101", "155A", "155E", "155H", "155N", "156", "156H"];
+scaleTicks = {
+  tickEveryUnit: 1,
+  labelEveryUnit: 10,
+  label: "%"
+};
+
+var matrix = [
+ [0, 0, 0, 0, 0, 0, 0.00,	0.00,	24.32,	16.67,	0.00,	31.28,	2.08],
+ [0, 0, 0, 0, 0, 0, 31.33,	0.00,	22.97,	0.00,	0.00,	0.00,	0.00],
+ [0, 0, 0, 0, 0, 0, 0.00,	0.00,	0.00,	0.00,	22.13,	0.00,	0.00],
+ [0, 0, 0, 0, 0, 0, 0.00,	0.00,	28.25,	0.00,	17.16,	0.00,	0.00],
+ [0, 0, 0, 0, 0, 0, 35.45,	44.56,	0.00,	20.83,	0.00,	0.00,	0.00],
+ [0, 0, 0, 0, 0, 0, 0.00,	39.83,	0.00,	0.00,	0.00,	0.00,	0.00],
+ [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+];
+
+//chord defines how each subgroup (connections to other groups) is sorted
+var chord = d3.layout.chord()
+    .padding(.05)
+    .sortSubgroups(d3.descending)
+    .matrix(matrix);
+
+//Define the layout in pixels
+var width = 640,
+    height = 640,
+    innerRadius = Math.min(width, height) * .25,
+    outerRadius = innerRadius * 1.1;
+
+//define a color palette
+var fill = d3.scale.ordinal()
+    .domain(d3.range(colors.length))
+    .range(colors);
+
+//set the body's attributes based on the previous variables
+svg = d3.select("#diagram").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+//add the group class to each group
+var g = svg.selectAll(".group")
+    .data(chord.groups)
+    .enter().append("g")
+    .attr("class", "group");
+
+//render labels around the chord
+g.append("text")
+    .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+    .attr("dy", ".35em")
+    .attr("transform", function(d) {
+        return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+            + "translate(" + (innerRadius + 100) + ")"
+            + (d.angle > Math.PI ? "rotate(180)" : "");
+    })
+    .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+    .text(function(d) {
+        return groupLabels[d.index];
+    });
+
+//define event handlers for hovering over groups
+svg.append("g").selectAll("path")
+    .data(chord.groups)
+    .enter().append("path")
+    .style("fill", function(d) {
+        return fill("#0000ff");
+    })
+    .style("stroke", function(d) { return fill(5); })
+    .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
+    .on("mouseover", fade(.1))
+    .on("mouseout", fade(1));
+
+//define ticks and tick labels
+var ticks = svg.append("g").selectAll("g")
+    .data(chord.groups)
+    .enter().append("g").selectAll("g")
+    .data(groupTicks)
+    .enter().append("g")
+    .attr("transform", function(d) {
+      return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+          + "translate(" + outerRadius + ",0)";
+    });
+
+ticks.append("line")
+    .attr("x1", 1)
+    .attr("y1", 0)
+    .attr("x2", 5)
+    .attr("y2", 0)
+    .style("stroke", "#000");
+
+ticks.append("text")
+    .attr("x", 8)
+    .attr("dy", ".35em")
+    .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
+    .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+    .text(function(d) { return d.label; });
+
+svg.append("g")
+    .attr("class", "chord")
+    .selectAll("path")
+    .data(chord.chords)
+    .enter().append("path")
+    .attr("d", d3.svg.chord().radius(innerRadius))
+    .style("fill", function(d) { return fill(d.target.index); })
+    .style("opacity", 1);
+
+});
+
+// Returns an array of tick angles and labels, given a group.
+function groupTicks(d) {
+  var k = (d.endAngle - d.startAngle) / d.value;
+  return d3.range(0, d.value, scaleTicks.tickEveryUnit).map(function(v, i) {
+    if(d.index <= 5) {
+        return {
+          angle: v * k + d.startAngle,
+          label: v % scaleTicks.labelEveryUnit ? null : v + " " + scaleTicks.label
+        };
+    } else {
+        return {
+          angle: v * k + d.startAngle,
+          label: null
+        };
+    }
+  });
+}
+
+// Returns an event handler for fading a given chord group.
+function fade(opacity) {
+  return function(g, i) {
+    svg.selectAll(".chord path")
+       .filter(function(d) { return d.source.index != i && d.target.index != i; })
+       .transition()
+       .style("opacity", opacity);
+  };
+}
+
+</script>
+</head>
+<body>
+    <h1>DFW Rates</h1>
+    <h2>Introductory Computer Science Courses</h2>
+
+    <p>The following graph shows the DFW (D, F, Withdraw) rates of various 100-level
+    Computer Science courses in the Department of Computer Science &amp; Engineering
+    at UNL.</p>
+
+    <div id="diagram"></div>
+</body>

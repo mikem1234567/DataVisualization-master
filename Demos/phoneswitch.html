@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<title>Phone Brand Switching Behavior</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <!-- <link type="text/css" rel="stylesheet" href="style.css"/> -->
+	  <style>
+		body {
+		  /*overflow: hidden;*/
+		  margin: 0;
+		  font-size: 14px;
+		  font-family: "Helvetica Neue", Helvetica;
+		}
+
+		#footer {
+		  position: absolute;
+		  top: 0;
+		  z-index: 1;
+		  display: block;
+		  font-size: 36px;
+		  font-weight: 300;
+		  text-shadow: 0 1px 0 #fff;
+		  top: 30px;
+		  left: 30px;
+		  text-align: left;
+		}
+
+		#owner{
+		  position: absolute;
+		  z-index: 1;
+		  display: block;
+		  font-weight: 300;
+		  text-shadow: 0 1px 0 #fff;
+		  top: 1500px;
+		  left: 30px;
+		  text-align: left;
+		  color: #474747;
+		  padding-bottom: 20px;
+		  font-size: 10px;
+		}
+
+		#SideText{
+		  position: absolute;
+		  display: block;
+		  font-size: 12px;
+		  color: #474747;
+		  top: 170px;
+		  left: 950px;
+		  width: 200px;
+		}
+
+
+
+		line {
+		  stroke: #000;
+		  stroke-width: 1.px;
+		}
+
+		text {
+		  font-size: 10px;
+		}
+
+		.titles{
+		  font-size: 14px;
+		}
+
+		.annotate{
+		  font-size: 11px;
+		  fill: #474747;
+		}
+
+		path.chord {
+		  fill-opacity: .80;
+		}
+
+		.pTitle {
+		   font-size: 16px;
+		   text-shadow: 0 1px 0 #fff;
+		   fill: #474747;
+		   font-weight: bold;
+		}
+
+		.survey {
+		  font-size: 10px;
+		}
+	  </style>
+  </head>
+  <body>
+    <div id="body">
+      <div id="footer">
+        Switching behavior between phone brands of the Dutch
+      </div>
+	  <div id="SideText">
+	  <p id="p0" class="pTitle Side">Chord Diagram</p>
+ 	  <p id="p1" class="Side">This chord diagram shows relationships in terms of switching behaviour among phone brands.</p>
+      <p id="p2" class="Side">The chords are directed: for example, while 12% of respondents who now have a Samsung used to have a Nokia, only 2% have the opposite; 2% now have a Nokia and used to have a Samsung phone.</p>
+	  <p id="p3" class="Side">The thickness of chords between brands encodes the percentage of respondents that switched between two brands: thicker chords represent a higher percentage of respondents that made that switch.</p>
+	  <p id="p4" class="Side">This diagram reveals asymmetries: if a chord is tapered, there are more respondents switching to one brand from the other than vice versa.</p>
+	  <p id="p5" class="Side">Mouse over a brand name to focus on switching behaviour to and from other brands concerning that specific brand.</p>
+ 	  </div>
+	  <div id="chart"></div>
+ 	  </div>
+    </div>
+    <script type="text/javascript">
+
+var NameProvider = ["Apple","Blackberry","HTC","LG","Nokia","Samsung","Sony","Other"];
+
+var matrix = [
+	[5.0858,1.777,0.7353,0.4902,2.6348,1.6544,0.5515,0.4289], //Apple
+	[0.0613,1.2868,0.2451,0,0.7353,0.6127,0.1225,0], //Blackberry
+	[0.1225,0.3676,2.5735,0.1225,2.2672,1.8382,0.7353,0.0613], //HTC
+	[0.0613,0.1225,0.2451,0.6127,1.348,0.9804,0.3676,0.5515], //LG
+	[0.2451,0.3064,0.1838,0.6127,14.951,1.8382,0.4289,1.777], //Nokia
+	[1.4706,1.8382,1.777,2.3897,12.2549,17.8922,2.2059,1.7157], //Samsung
+	[0.0613,0.2451,0.5515,0.2451,1.348,0.7966,1.777,0.3064], //Sony
+	[0,0,0.1225,0.3064,1.1642,0.6127,0.4902,1.2868] //Other
+];
+
+var colors = ["#C4C4C4","#000000","#69B40F","#C8125C","#008FC8","#10218B","#134B24","#737373"];
+
+var chord = d3.layout.chord()
+    .padding(.04)
+    .sortSubgroups(d3.descending) //sort the chords inside an arc from high to low
+    .sortChords(d3.descending) //which chord should be shown on top when chords cross. Now the biggest chord is at the bottom
+	.matrix(matrix);
+
+var width = 900,
+    height = 650,
+    innerRadius = Math.min(width, height) * .39,
+    outerRadius = innerRadius * 1.09;
+
+var fill = d3.scale.ordinal()
+    .domain(d3.range(NameProvider.length))
+    .range(colors);
+
+var arc = d3.svg.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(outerRadius);
+
+var svg = d3.select("#chart").append("svg:svg")
+    .attr("width", width)
+    .attr("height", height+250)
+	.append("svg:g")
+    .attr("transform", "translate(" + (width / 2 + 30)  + "," + (height / 2+180) + ")");
+
+////////////////////////////////////////////////////////////
+////////////////// Draw outer Arcs /////////////////////////
+////////////////////////////////////////////////////////////
+
+var g = svg.selectAll("g.group")
+	.data(chord.groups)
+	.enter().append("svg:g")
+	.attr("class", "group")
+	.on("mouseover", fadeIn(.02))
+	.on("mouseout", fadeOut(.80));
+
+g.append("svg:path")
+  .style("stroke", function(d) { return fill(d.index); })
+  .style("fill", function(d) { return fill(d.index); })
+  .attr("d", arc);
+
+////////////////////////////////////////////////////////////
+////////////////// Append Ticks ////////////////////////////
+////////////////////////////////////////////////////////////
+
+var ticks = svg.append("svg:g").selectAll("g.ticks")
+    .data(chord.groups)
+	.enter().append("svg:g").selectAll("g.ticks")
+	.attr("class", "ticks")
+    .data(groupTicks)
+	.enter().append("svg:g")
+    .attr("transform", function(d) {
+      return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+          + "translate(" + outerRadius+40 + ",0)";
+    });
+
+ticks.append("svg:line")
+    .attr("x1", 1)
+    .attr("y1", 0)
+    .attr("x2", 5)
+    .attr("y2", 0)
+    .style("stroke", "#000");
+
+ticks.append("svg:text")
+    .attr("x", 8)
+    .attr("dy", ".35em")
+    .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
+    .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+    .text(function(d) { return d.label; });
+
+////////////////////////////////////////////////////////////
+////////////////// Append Names ////////////////////////////
+////////////////////////////////////////////////////////////
+
+g.append("svg:text")
+  .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+  .attr("dy", ".35em")
+  .attr("class", "titles")
+  .attr("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+  .attr("transform", function(d) {
+		return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+		+ "translate(" + (innerRadius + 55) + ")"
+		+ (d.angle > Math.PI ? "rotate(180)" : "");
+  })
+  .text(function(d,i) { return NameProvider[i]; });
+
+////////////////////////////////////////////////////////////
+////////////////// Draw inner chords ///////////////////////
+////////////////////////////////////////////////////////////
+
+svg.selectAll("path.chord")
+	.data(chord.chords)
+	.enter().append("svg:path")
+	.attr("class", "chord")
+	.style("stroke", function(d) { return d3.rgb(fill(d.source.index)).darker(); })
+	.style("fill", function(d) { return fill(d.source.index); })
+	.attr("d", d3.svg.chord().radius(innerRadius));
+
+////////////////////////////////////////////////////////////
+////////////////////// Annotate ////////////////////////////
+////////////////////////////////////////////////////////////
+//From Nokia to Samsung
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", -445)
+   .attr("y", 10)
+   .text("12% of respondents switched");
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", -445)
+   .attr("y", 23)
+   .text("from Nokia to Samsung");
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", -445)
+   .attr("y", 38)
+   .text("That is more than half of");
+   svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", -445)
+   .attr("y", 51)
+   .text("those currently at Nokia");
+svg.append("svg:line")
+   .attr("class", "annotate")
+   .attr("x1", -445)
+   .attr("y1", -3)
+   .attr("x2", -290)
+   .attr("y2", -3)
+   .style("stroke", "#858585");
+
+//From Samsung to Nokia
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", 90)
+   .attr("y", 340)
+   .text("Only 2% of respondents");
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", 90)
+   .attr("y", 353)
+   .text("switched from Samsung to Nokia");
+svg.append("svg:line")
+   .attr("class", "annotate")
+   .attr("x1", 85)
+   .attr("y1", 275)
+   .attr("x2", 85)
+   .attr("y2", 354)
+   .style("stroke", "#858585");
+
+//Nokia Loyal
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", 420)
+   .attr("y", 130)
+   .attr("text-anchor","end")
+   .text("15% of respondents");
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", 420)
+   .attr("y", 143)
+   .attr("text-anchor","end")
+   .text("stayed loyal to Nokia");
+svg.append("svg:line")
+   .attr("class", "annotate")
+   .attr("x1", 265)
+   .attr("y1", 117)
+   .attr("x2", 420)
+   .attr("y2", 117)
+   .style("stroke", "#858585");
+
+//Apple
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", 63)
+   .attr("y", -383)
+   .text("Because all chords at the arc of Apple have");
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", 63)
+   .attr("y", -370)
+   .text("the color of Apple (grey), Apple is taking more clients");
+svg.append("svg:text")
+   .attr("class", "annotate")
+   .attr("x", 63)
+   .attr("y", -357)
+   .text("from all other brands than it is losing to them");
+svg.append("svg:line")
+   .attr("class", "annotate")
+   .attr("x1", 58)
+   .attr("y1", -282)
+   .attr("x2", 58)
+   .attr("y2", -393)
+   .style("stroke", "#858585");
+
+////////////////////////////////////////////////////////////
+////////////////// Extra Functions /////////////////////////
+////////////////////////////////////////////////////////////
+
+// Returns an event handler for fading a given chord group.
+function fadeIn(opacity) {
+  return function(d, i) {
+    d3.selectAll(".Side")
+	  .transition()
+	  .duration(200)
+	  .style("opacity", 0.0001);
+
+	d3.selectAll(".annotate")
+	  .transition()
+	  .duration(200)
+	  .style("opacity", 0.0001);
+
+	d3.select("#p0").transition().duration(200).delay(200).style("opacity", 1).text(NameProvider[i]);
+
+	if(i == 0) { //Apple
+		d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("All chords connected to Apple are ‘Apple grey’, thus showing that Apple has been able to take more customers from all other brands than vice versa, making it the most successful net gainer of all brands in this analysis");
+		d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text("Additionally, more than a third of the current iPhone owners also previously had an iPhone, implying significant loyalty among Apple owners.  This is in line with the finding that around one fifth of Apple owners responded to have bought their device because they have other devices of the same brand, like iPad or iPod. ");
+		d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text("The respondents having an iPhone pay significantly more attention than other brand owners to purchasing criteria like the handset brand, design, new model on the market, broad range of available apps, streaming content to other devices and the fact that most of their friends have the same device. ");
+		d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+	} else if (i == 1) { //Blackberry
+		d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("Blackberry is the smallest brand not yet grouped into the 'Other' category with a share of 3% among respondents.");
+		d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text("Almost half of their current base is loyal to Blackberry; their previous phone was a Blackberry as well.");
+		d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text("However, it appears that Blackberry lost a large share (3%) to Apple and Samsung (the chord ending at Samsung and Apple are much wider than the beginning of these chords at Blackberry.)");
+		d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text("Blackberry also lost more customers to all other brands than it took from them, except for Nokia");
+		d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+	} else if (i == 2) { //HTC
+		d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("HTC is especially successful in taking customers from Nokia, but it seems to take as many customers from Samsung, Sony and LG as it lost to them (the chords connecting HTC with these three brands begin and end in similar sizes).");
+		d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+	} else if (i == 3) { //LG
+		d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("Slightly larger than the smallest brand not yet in the 'Other' group, LG is currently owned by 4% of the respondents.");
+		d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text("LG is taking more clients from all other brands, except Apple and Samsung, than it is losing to them. For those chords in the color of LG, only the chord connecting Nokia and LG is quite asymetrical. LG is therefore better in taking clients from Nokia than vice versa.");
+		d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text("The brand that is most successful in taking customers away from LG is Samsung; 2% of respondents are now at Samsung and came from LG - A significant portion of the share currently at LG");
+		d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+	} else if (i == 4) { //Nokia
+		d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("Nokia is still the second-largest brand in the mobile phone installed base with a 20% share among respondents. ");
+		d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text("A very large fraction of these phones belong to the feature phone category. Nokia is a net loser compared to all other main brands. The most dramatic loss is to Samsung; when comparing sizes, Nokia lost more than half of its current share to Samsung alone. ");
+		d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text("Compared to other brand owners, Nokia owners were particularly interested in the device price when purchasing their latest devices, besides factors applicable to all brands like reliability.");
+		d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+	} else if (i == 5) { //Samsung
+		d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("Samsung is dominating the mobile phone installed base, with more than 40% of respondents currently using a Samsung phone. ");
+		d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text("Besides being a net gainer from most other brands, Samsung has also been very successful in keeping their customers loyal; almost half of the current Samsung share had a Samsung as their previous phone. ");
+		d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text("According to our survey results, Samsung owners were paying more attention to purchasing criteria like device price, cost of tariff, the quality of touchscreen, phone size and battery life than Apple users. These factors could be the most important differentiators attributing to the success of Samsung in the broad mass market.");
+		d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+	} else if (i == 6) { //Sony
+		d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("Sony appears to lose as many customers to (most) other brands, as it is taking from them. Only Samsung is able to take a significant bigger portion from Sony than vice versa.");
+		d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+	} else if (i == 7) { //Other
+		d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("Brands that have been grouped in the 'Other' category include; Motorola, Huawei and ZTE");
+		d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+		d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text(" ");
+	};
+
+    svg.selectAll("path.chord")
+        .filter(function(d) { return d.source.index != i && d.target.index != i; })
+		.transition()
+        .style("stroke-opacity", opacity)
+        .style("fill-opacity", opacity);
+
+  };
+}//fadeIn
+
+// Returns an event handler for fading a given chord group.
+function fadeOut(opacity) {
+  return function(d, i) {
+
+    d3.selectAll(".Side")
+	  .transition()
+	  .duration(200)
+	  .style("opacity", 0.0001);
+
+	d3.selectAll(".annotate")
+	  .transition()
+	  .duration(200)
+	  .style("opacity", 1);
+
+   	d3.select("#p0").transition().duration(200).delay(200).style("opacity", 1).text("Chord Diagram")
+ 	d3.select("#p1").transition().duration(200).delay(200).style("opacity", 1).text("This chord diagram shows relationships in terms of switching behaviour among phone brands.")
+    d3.select("#p2").transition().duration(200).delay(200).style("opacity", 1).text("The chords are directed: for example, while 12% of respondents who now have a Samsung used to have a Nokia, only 2% have the opposite; 2% now have a Nokia and used to have a Samsung phone.")
+	d3.select("#p3").transition().duration(200).delay(200).style("opacity", 1).text("The thickness of chords between brands encodes the percentage of respondents that switched between two brands: thicker chords represent a higher percentage of respondents that made that switch.")
+	d3.select("#p4").transition().duration(200).delay(200).style("opacity", 1).text("This diagram reveals asymmetries: if a chord is tapered, there are more respondents switching to one brand from the other than vice versa.")
+	d3.select("#p5").transition().duration(200).delay(200).style("opacity", 1).text("Mouse over a brand name to focus on switching behaviour to and from other brands concerning that specific brand.")
+
+    svg.selectAll("path.chord")
+        .filter(function(d) { return d.source.index != i && d.target.index != i; })
+		.transition()
+        .style("stroke-opacity", opacity)
+        .style("fill-opacity", opacity);
+  };
+}//fadeOut
+
+// Returns an array of tick angles and labels, given a group.
+function groupTicks(d) {
+  var k = (d.endAngle - d.startAngle) / d.value;
+  return d3.range(0, d.value, 1).map(function(v, i) {
+    return {
+      angle: v * k + d.startAngle,
+      label: i % 5 ? null : v + "%"
+    };
+  });
+}//groupTicks
+
+    </script>
+  </body>
+</html>
